@@ -1,0 +1,40 @@
+{% comment %}
+** Product snippet - only used as AJAX reference for recently viewed **
+{% endcomment %}
+
+<div class="js-recently-viewed-product clearfix">
+  <div class="product-wrap">
+      <div class="relative product_image">
+        <a href="{{ product.url | within: collection }}">
+          <div class="image__container">
+            {% include 'image-element', image: product.featured_media.preview_image, alt: product.featured_image.alt, stretch_width: true %}
+            {% if settings.collection_secondary_image != blank and product.media[1] != blank %}
+              {% assign youtube_video = product.media | where: "media_type", "external_video" %}
+              {% assign html5_video = product.media | where: "media_type", "video" %}
+
+              {% if youtube_video.first %}
+                <div class="external-video__container lazyload lazypreload secondary-media-hidden video-on-hover">
+                  <div class="youtube-wrapper" data-youtube-video>
+                    {{ youtube_video.first | external_video_tag }}
+                  </div>
+                </div>
+              {% elsif html5_video.first %}
+                <div class="video__container lazyload lazypreload secondary-media-hidden video-on-hover" data-html5-video>
+                  {{ html5_video.first | video_tag: controls: false }}
+                </div>
+              {% else %}
+                {% include 'image-element', image: product.media[1].preview_image, alt: alt_text, additional_classes: 'secondary lazypreload secondary-media-hidden' %}
+              {% endif %}
+            {% endif %}
+          </div>
+          </a>
+        {% include "product-details" %}
+      </div>
+      <a class="product-info__caption {% if settings.thumbnail_hover_enabled %}hidden{% endif %}" href="{{ product.url | within: collection }}">
+        {% include "product-info" %}
+      </a>
+      </div>
+    {% include 'collection-swatch' %}
+  </div>
+</div>
+<div class="js-recommended-products"></div>
